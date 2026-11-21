@@ -1,0 +1,8 @@
+@"
+__pycache__/
+*.py[cod]
+*.db
+venv/
+.env
+static/qrcodes/*.png
+"@ | Out-File -FilePath .gitignore -Encoding utf8

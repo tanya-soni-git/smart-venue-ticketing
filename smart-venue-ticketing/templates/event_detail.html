@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>{{ event.title }} — {{ event.venue.name }}</h3>
+<p><strong>Pricing:</strong>
+  {% for cat, pr in tier_prices.items() %}<span class="badge bg-info text-dark me-2">{{ cat }}: ₹{{ pr }}</span>{% endfor %}
+</p>
+<div class="mb-3">
+  <span class="badge bg-success">Available</span>
+  <span class="badge bg-warning text-dark">Held (10 min lock)</span>
+  <span class="badge bg-danger">Booked</span>
+</div>
+
+<form method="POST">
+  <input type="hidden" name="action" value="hold">
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    {% for seat in event.venue.seats %}
+      {% if seat.id in booked_ids %}
+        <button type="button" class="btn btn-danger btn-sm" disabled>{{ seat.label }} ({{ seat.category[0] }})</button>
+      {% elif seat.id in active_holds %}
+        <label class="btn btn-warning btn-sm">
+          {% if active_holds[seat.id] == current_user.id %}
+            <input type="checkbox" name="seat_ids" value="{{ seat.id }}" checked>
+          {% endif %}
+          {{ seat.label }} ({{ seat.category[0] }})
+        </label>
+      {% else %}
+        <label class="btn btn-outline-success btn-sm">
+          <input type="checkbox" name="seat_ids" value="{{ seat.id }}"> {{ seat.label }} ({{ seat.category[0] }})
+        </label>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <button class="btn btn-warning">Hold Selected Seats (Max 6)</button>
+</form>
+
+{% if user_holds %}
+<hr>
+<div class="alert alert-warning">
+  You currently hold <strong>{{ user_holds|length }}</strong> seat(s). Expires at {{ user_holds[0].expires_at.strftime('%H:%M:%S') }} UTC.
+  <form method="POST" class="mt-2">
+    <input type="hidden" name="action" value="confirm">
+    <button class="btn btn-success">Pay & Confirm Booking</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

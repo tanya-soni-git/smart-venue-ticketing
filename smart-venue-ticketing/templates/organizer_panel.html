@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  {% if current_user.role == 'Admin' %}
+  <div class="col-md-6 mb-4">
+    <div class="card p-3">
+      <h5>1. Register Venue & Generate Seat Map</h5>
+      <form method="POST">
+        <input type="hidden" name="form_type" value="venue">
+        <input class="form-control mb-2" name="name" placeholder="Venue Name" required>
+        <input class="form-control mb-2" name="city" placeholder="City" required>
+        <input class="form-control mb-2" name="address" placeholder="Address" required>
+        <div class="row g-2 mb-2">
+          <div class="col"><input class="form-control" type="number" name="rows" placeholder="Rows (e.g. 4)" min="1" max="10" required></div>
+          <div class="col"><input class="form-control" type="number" name="cols" placeholder="Seats/Row (e.g. 8)" min="1" max="20" required></div>
+        </div>
+        <button class="btn btn-primary">Create Venue</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="col-md-6 mb-4">
+    <div class="card p-3">
+      <h5>2. Create Event & Pricing Tiers</h5>
+      <form method="POST">
+        <input type="hidden" name="form_type" value="event">
+        <input class="form-control mb-2" name="title" placeholder="Event Title" required>
+        <input class="form-control mb-2" name="category" placeholder="Category (Concert, Tech, Sports)" required>
+        <input class="form-control mb-2" type="datetime-local" name="event_datetime" required>
+        <select class="form-select mb-2" name="venue_id" required>
+          {% for v in venues %}<option value="{{ v.id }}">{{ v.name }} ({{ v.city }})</option>{% endfor %}
+        </select>
+        <textarea class="form-control mb-2" name="description" placeholder="Description"></textarea>
+        <div class="row g-2 mb-2">
+          <div class="col"><input class="form-control" type="number" name="price_Platinum" placeholder="Platinum ₹" required></div>
+          <div class="col"><input class="form-control" type="number" name="price_Gold" placeholder="Gold ₹" required></div>
+          <div class="col"><input class="form-control" type="number" name="price_Silver" placeholder="Silver ₹" required></div>
+          <div class="col"><input class="form-control" type="number" name="price_Accessible" placeholder="Accessible ₹" required></div>
+        </div>
+        <button class="btn btn-success">Save Draft Event</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<h5>Manage Events</h5>
+<table class="table table-bordered bg-white">
+  <tr><th>Title</th><th>Venue</th><th>Status</th><th>Actions</th></tr>
+  {% for ev in events %}
+  <tr>
+    <td>{{ ev.title }}</td><td>{{ ev.venue.name }}</td><td>{{ ev.status }}</td>
+    <td>
+      {% if ev.status == 'Draft' %}
+      <form method="POST" class="d-inline">
+        <input type="hidden" name="form_type" value="publish"><input type="hidden" name="event_id" value="{{ ev.id }}">
+        <button class="btn btn-sm btn-primary">Publish</button>
+      </form>
+      {% endif %}
+      {% if ev.status != 'Cancelled' %}
+      <form method="POST" class="d-inline">
+        <input type="hidden" name="form_type" value="cancel_event"><input type="hidden" name="event_id" value="{{ ev.id }}">
+        <button class="btn btn-sm btn-danger">Cancel & Refund All</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

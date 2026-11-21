@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>My E-Tickets</h3>
+<div class="row">
+  {% for bk in bookings %}
+  <div class="col-md-6 mb-3">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between">
+        <div>
+          <h5>{{ bk.event.title }}</h5>
+          <p class="mb-1"><strong>Ref:</strong> {{ bk.booking_ref }} | <strong>Status:</strong> {{ bk.status }}</p>
+          <p class="mb-1"><strong>Seats:</strong> {% for bs in bk.booked_seats %}{{ bs.seat.label }} {% endfor %}</p>
+          <p class="mb-1"><strong>Paid:</strong> ₹{{ bk.total_amount }}</p>
+          <p class="small text-muted">QR Token: <code>{{ bk.qr_token }}</code></p>
+        </div>
+        {% if bk.qr_image_path and bk.status == 'Confirmed' %}
+          <img src="{{ url_for('static', filename=bk.qr_image_path) }}" width="120" height="120" alt="QR">
+        {% endif %}
+      </div>
+      {% if bk.status == 'Confirmed' %}
+      <form method="POST" class="mt-2">
+        <input type="hidden" name="booking_id" value="{{ bk.id }}">
+        <button class="btn btn-outline-danger btn-sm">Cancel Ticket (Policy Refund)</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

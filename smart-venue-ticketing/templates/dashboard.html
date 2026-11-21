@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Sales, Attendance & Settlement Reports</h3>
+<table class="table table-striped bg-white">
+  <thead>
+    <tr>
+      <th>Event</th><th>Sold / Cap</th><th>Fill %</th><th>Gross Revenue</th>
+      <th>Refunds</th><th>Net Organizer Settlement</th><th>Gate Check-ins</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in reports %}
+    <tr>
+      <td>{{ r.event.title }} ({{ r.event.status }})</td>
+      <td>{{ r.tickets_sold }} / {{ r.capacity }}</td>
+      <td>{{ r.fill_pct }}%</td>
+      <td>₹{{ r.gross_revenue }}</td>
+      <td>₹{{ r.refunds }}</td>
+      <td>₹{{ r.net_payable }}</td>
+      <td>{{ r.check_ins }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

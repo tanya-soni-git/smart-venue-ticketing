@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-6 mx-auto card p-4">
+  <h4>Venue Entry Gate Scanner</h4>
+  <p class="text-muted">Live Check-Ins: <strong>{{ checked_in }}</strong> / {{ sold_bookings }} Confirmed Bookings</p>
+  <form method="POST">
+    <select class="form-select mb-2" name="event_id">
+      {% for ev in events %}
+        <option value="{{ ev.id }}" {% if ev.id == selected_event_id %}selected{% endif %}>{{ ev.title }}</option>
+      {% endfor %}
+    </select>
+    <input class="form-control mb-3" name="qr_token" placeholder="Paste QR Token from Ticket" required autofocus>
+    <button class="btn btn-dark w-100">Validate Ticket Entry</button>
+  </form>
+  {% if scan_result %}
+    <div class="alert alert-{{ 'success' if scan_result[0] else 'danger' }} mt-3">{{ scan_result[1] }}</div>
+  {% endif %}
+</div>
+{% endblock %}
