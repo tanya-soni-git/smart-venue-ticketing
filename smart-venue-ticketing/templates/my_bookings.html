@@ -14,7 +14,7 @@
           <p class="small text-muted">QR Token: <code>{{ bk.qr_token }}</code></p>
         </div>
         {% if bk.qr_image_path and bk.status == 'Confirmed' %}
-          <img src="{{ url_for('static', filename=bk.qr_image_path) }}" width="120" height="120" alt="QR">
+          <img src="{{ bk.qr_image_path }}" width="120" height="120" alt="QR">
         {% endif %}
       </div>
       {% if bk.status == 'Confirmed' %}

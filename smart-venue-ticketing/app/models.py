@@ -83,7 +83,7 @@ class Booking(db.Model):
     # Status: Confirmed, Cancelled
     status = db.Column(db.String(20), default="Confirmed")
     qr_token = db.Column(db.String(64), unique=True, default=lambda: uuid.uuid4().hex)
-    qr_image_path = db.Column(db.String(255))
+    qr_image_path = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
